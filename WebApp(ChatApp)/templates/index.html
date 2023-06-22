@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block bodycontent %}
+<a href="/logout">ログアウト</a>
+
+<div class="container">
+    <div class="row">
+      <div class="col-md-3">
+        <!-- チャンネルリスト -->
+        <ul class="list-group">
+          <li class="list-group-item"><a href="/chatspace/user1/user2">Channel 1</a></li>
+          <li class="list-group-item">Channel 2</li>
+          <li class="list-group-item">Channel 3</li>
+        </ul>
+      </div>
+      <div class="col-md-9">
+        <!-- チャットメッセージ -->
+        <div class="card mb-3">
+          <div class="card-header">
+            User 1
+          </div>
+          <div class="card-body">
+            <p class="card-text">Hello, world!</p>
+          </div>
+        </div>
+        <div class="card mb-3">
+          <div class="card-header">
+            User 2
+          </div>
+          <div class="card-body">
+            <p class="card-text">How are you?</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
