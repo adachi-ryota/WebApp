@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, current_app
 from flask_sqlalchemy import SQLAlchemy
 #管理者画面
 from flask_admin import Admin
@@ -44,6 +44,10 @@ admin = Admin(app, '管理者画面')
 admin.add_view(MyModelView(User, db.session))
 admin.add_view(MyModelView(Existance, db.session))
 
+# def admin_required(current_user):
+#     if current_user.is_Administrator:
+#         return current_app.login_manager.unauthorized()
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -86,6 +90,11 @@ def logout():
 @login_required
 def index():
     return render_template('index.html')
+
+# @app.route('/delete')
+# @admin_required
+# def delete():
+#     return render_template('deleteuser.html')
 
 
 if __name__ == '__main__':
