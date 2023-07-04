@@ -5,7 +5,7 @@ from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 import os
-import uuid
+# import uuid
 from  werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
@@ -24,14 +24,25 @@ class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), unique=True)
     password = db.Column(db.String(20))
+    Administrator = db.Column(db.Boolean)
+
+    @property
+    def is_Administrator(self):
+        return self.Administrator
+
 
 class Existance(db.Model):
     user_id = db.Column(db.Integer)
     user_id2 = db.Column(db.Integer)
     chatchannelID = db.Column(db.Integer, primary_key=True)
 
-admin = Admin(app)
-admin.add_view(ModelView(User, db.session))
+class MyModelView(ModelView):
+    def is_accessible(self):
+        return current_user.is_Administrator
+
+admin = Admin(app, '管理者画面')
+admin.add_view(MyModelView(User, db.session))
+admin.add_view(MyModelView(Existance, db.session))
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -55,7 +66,7 @@ def signup():
         password = request.form.get('password')
 
         if username and password:
-            user = User(username=username, password=generate_password_hash(password, method='sha256'))
+            user = User(username=username, password=generate_password_hash(password, method='sha256'), Administrator=False)
 
             db.session.add(user)
             db.session.commit()
