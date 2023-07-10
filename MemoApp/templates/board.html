@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block bodycontent %}
+<div>
+    <button >メモ作成</button>
+</div>
+<div>
+    {% for Boardel in Boardinfo %}
+        <textarea name="" id="{{ Boardel.id }}" cols="30" rows="10" style="left:200px; top:10px ;" readonly>{{ Boardel.text }}</textarea>
+    {% endfor %}
+</div>
+{% endblock %}

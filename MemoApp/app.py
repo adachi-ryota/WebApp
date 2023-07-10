@@ -6,12 +6,13 @@ from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
 
 import os
-# import uuid
+from sqlalchemy.dialects import postgresql as pg
 from  werkzeug.security import generate_password_hash, check_password_hash
+# import uuid
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.urandom(24)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///chat.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///memo.db'
 db = SQLAlchemy(app)
 
 login_manager = LoginManager(app)
@@ -31,10 +32,18 @@ class User(db.Model, UserMixin):
     def is_Administrator(self):
         return self.Administrator
 
-class Existance(db.Model):
-    user_id = db.Column(db.Integer)
-    user_id2 = db.Column(db.Integer)
-    chatchannelID = db.Column(db.Integer, primary_key=True)
+#ボードの確認
+class Boards(db.Model):
+    board_id = db.Column(db.Integer, primary_key=True)
+    # available_user = db.Column(pg.ARRAY(db.Integer, dimensions=1))
+
+#ボード
+class Board(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    writeuserid = db.Column(db.Integer)
+    text = db.Column(db.Text())
+    x = db.Column(db.Integer)
+    y = db.Column(db.Integer)
 
 #管理者画面
 class MyModelView(ModelView):
@@ -42,7 +51,8 @@ class MyModelView(ModelView):
         return current_user.is_Administrator
 admin = Admin(app, '管理者画面')
 admin.add_view(MyModelView(User, db.session))
-admin.add_view(MyModelView(Existance, db.session))
+admin.add_view(MyModelView(Boards, db.session))
+admin.add_view(MyModelView(Board, db.session))
 
 #ログイン画面
 @app.route('/login', methods=['GET', 'POST'])
@@ -89,7 +99,15 @@ def logout():
 @app.route('/')
 @login_required
 def index():
+    # Boards = Boards.query.all()
     return render_template('index.html')
+
+#ボード画面
+@app.route('/board')
+@login_required
+def board():
+    Boardinfo = Board.query.all()
+    return render_template('board.html',Boardinfo=Boardinfo)
 
 if __name__ == '__main__':
     app.run(debug=True)
