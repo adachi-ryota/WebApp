@@ -1,9 +1,10 @@
 from flask import Flask, render_template, request, redirect, current_app
+from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from flask_sqlalchemy import SQLAlchemy
 #管理者画面
 from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
-from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
+
 import os
 # import uuid
 from  werkzeug.security import generate_password_hash, check_password_hash
@@ -30,24 +31,20 @@ class User(db.Model, UserMixin):
     def is_Administrator(self):
         return self.Administrator
 
-
 class Existance(db.Model):
     user_id = db.Column(db.Integer)
     user_id2 = db.Column(db.Integer)
     chatchannelID = db.Column(db.Integer, primary_key=True)
 
+#管理者画面
 class MyModelView(ModelView):
     def is_accessible(self):
         return current_user.is_Administrator
-
 admin = Admin(app, '管理者画面')
 admin.add_view(MyModelView(User, db.session))
 admin.add_view(MyModelView(Existance, db.session))
 
-# def admin_required(current_user):
-#     if current_user.is_Administrator:
-#         return current_app.login_manager.unauthorized()
-
+#ログイン画面
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -63,6 +60,7 @@ def login():
     else:
         return render_template('login.html')
 
+#アカウント作成画面
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     if request.method == 'POST':
@@ -80,22 +78,18 @@ def signup():
     else:
         return render_template('signup.html')
 
+#ログアウト
 @app.route('/logout')
 @login_required
 def logout():
     logout_user()
     return redirect('/login')
 
+#基本画面
 @app.route('/')
 @login_required
 def index():
     return render_template('index.html')
-
-# @app.route('/delete')
-# @admin_required
-# def delete():
-#     return render_template('deleteuser.html')
-
 
 if __name__ == '__main__':
     app.run(debug=True)
