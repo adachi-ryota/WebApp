@@ -7,8 +7,16 @@
 <div>
     {% for Boardel in Boardinfo %}
     <div>
-        <textarea class="positioned" name="" id="{{ Boardel.id }}" cols="25" rows="8" readonly>{{ Boardel.text }}</textarea>
+        <textarea class="memo" name="" id="" cols="25" rows="8"readonly>{{ Boardel.text }}</textarea>
     </div>
     {% endfor %}
+    <style>
+        .memo {
+            color:black;
+            background-color: rgb(243, 197, 197);
+            position: relative;
+        }
+    </style>
 </div>
+
 {% endblock %}

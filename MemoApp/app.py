@@ -22,6 +22,7 @@ login_manager.login_view = 'login'
 def load_user(user_id):
     return User.query.get(int(user_id))
 
+#ユーザ情報
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), unique=True)
@@ -32,14 +33,15 @@ class User(db.Model, UserMixin):
     def is_Administrator(self):
         return self.Administrator
 
-#ボードの確認
+#ボード情報
 class Boards(db.Model):
     board_id = db.Column(db.Integer, primary_key=True)
-    # available_user = db.Column(pg.ARRAY(db.Integer, dimensions=1))
+    title = db.Column(db.String(20))
 
-#ボード
-class Board(db.Model):
+#メモ情報
+class Memo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    board_id = db.Column(db.Integer)
     writeuserid = db.Column(db.Integer)
     text = db.Column(db.Text())
     x = db.Column(db.Integer)
@@ -52,7 +54,7 @@ class MyModelView(ModelView):
 admin = Admin(app, '管理者画面')
 admin.add_view(MyModelView(User, db.session))
 admin.add_view(MyModelView(Boards, db.session))
-admin.add_view(MyModelView(Board, db.session))
+admin.add_view(MyModelView(Memo, db.session))
 
 #ログイン画面
 @app.route('/login', methods=['GET', 'POST'])
@@ -99,14 +101,14 @@ def logout():
 @app.route('/')
 @login_required
 def index():
-    # Boards = Boards.query.all()
-    return render_template('index.html')
+    boards = Boards.query.all()
+    return render_template('index.html',Boards=boards)
 
 #ボード画面
-@app.route('/board')
+@app.route('/board/<id>')
 @login_required
-def board():
-    Boardinfo = Board.query.all()
+def board(id):
+    Boardinfo = Memo.query.filter_by(board_id=id)
     return render_template('board.html',Boardinfo=Boardinfo)
 
 if __name__ == '__main__':

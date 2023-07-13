@@ -7,10 +7,11 @@
   <a href="/admin">管理者画面</a>
 </div>
 <div>
-  <a href="/delete">ユーザー削除</a>
-</div>
-<div>
-  <a href="/board">ボード</a>
+  {% for Board in Boards %}
+  <div>
+    <a href="board/{{ Board.board_id }}">{{ Board.title }}</a>
+  </div>
+  {% endfor %}
 </div>
 
 {% endblock %}
