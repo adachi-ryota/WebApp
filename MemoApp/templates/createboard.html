@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block bodycontent %}
+<div>
+    <a href="/">戻る</a><br>
+</div>
+<form method="post">
+    <div>
+        <label for="title">タイトル</label>
+        <input type="text" id="title" name="title">
+    </div>
+    <div>
+        <label for="browsing">閲覧者</label>
+        <select name="browsing" size="1">
+            <option value="0">全体</option>
+            <option value="{{ user.id }}">自身のみ</option>
+        </select>
+    </div>
+    <input type="submit" value="作成">
+    <h1>{{ message }}</h1>
+</forn>
+{% endblock %}

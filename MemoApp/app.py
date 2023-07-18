@@ -37,6 +37,7 @@ class User(db.Model, UserMixin):
 class Boards(db.Model):
     board_id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(20))
+    browsing = db.Column(db.Integer)
 
 #メモ情報
 class Memo(db.Model):
@@ -67,8 +68,10 @@ def login():
             if check_password_hash(user.password, password):
                 login_user(user)
                 return redirect('/')
+            else:
+                return render_template('login.html', message='Invalid username or password')
         else:
-            return render_template('login.html', message='Invalid username or password')
+            return render_template('login.html', message='Not filled in username or password')
     else:
         return render_template('login.html')
 
@@ -101,8 +104,29 @@ def logout():
 @app.route('/')
 @login_required
 def index():
-    boards = Boards.query.all()
-    return render_template('index.html',Boards=boards)
+    user=current_user
+    boards1 = Boards.query.filter_by(browsing=user.id)
+    boards2 = Boards.query.filter_by(browsing=0)
+    return render_template('index.html',Boards1=boards1, Boards2=boards2)
+
+#ボード作成画面
+@app.route('/createboard', methods=['GET', 'POST'])
+@login_required
+def createboard():
+    if request.method == 'POST':
+        title = request.form.get('title')
+        browsing = request.form.get('browsing')
+
+        if title and browsing:
+            board = Boards(title=title, browsing=browsing)
+
+            db.session.add(board)
+            db.session.commit()
+            return redirect('/')
+        else:
+            return render_template('createboard.html', user=current_user, message='Not filled in title or ituka')
+    else:
+        return render_template('createboard.html', user=current_user)
 
 #ボード画面
 @app.route('/board/<id>')

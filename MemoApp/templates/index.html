@@ -7,11 +7,21 @@
   <a href="/admin">管理者画面</a>
 </div>
 <div>
-  {% for Board in Boards %}
-  <div>
-    <a href="board/{{ Board.board_id }}">{{ Board.title }}</a>
-  </div>
-  {% endfor %}
+  <a href="/createboard">ボード作成</a>
 </div>
+<ul>個人ボード
+  {% for Board in Boards1 %}
+    <li>
+      <a href="board/{{ Board.board_id }}">{{ Board.title }}</a>
+    </li>
+  {% endfor %}
+</ul>
+<ul>共有ボード
+  {% for Board in Boards2 %}
+    <li>
+      <a href="board/{{ Board.board_id }}">{{ Board.title }}</a>
+    </li>
+  {% endfor %}
+</ul>
 
 {% endblock %}
