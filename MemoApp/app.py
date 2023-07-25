@@ -45,6 +45,7 @@ class Memo(db.Model):
     board_id = db.Column(db.Integer)
     writeuserid = db.Column(db.Integer)
     text = db.Column(db.Text())
+    memocolor = db.Column(db.String(6))
     x = db.Column(db.Integer)
     y = db.Column(db.Integer)
 

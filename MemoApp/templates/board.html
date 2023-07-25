@@ -1,22 +1,66 @@
 {% extends "base.html" %}
 {% block bodycontent %}
-<div>
-    <a href="/">戻る</a><br>
-    <button >メモ作成</button><br>
-</div>
-<div>
-    {% for Boardel in Boardinfo %}
-    <div>
-        <textarea class="memo" name="" id="" cols="25" rows="8"readonly>{{ Boardel.text }}</textarea>
-    </div>
-    {% endfor %}
     <style>
-        .memo {
-            color:black;
+        body {
+            background-color: white;
+        }
+        .color1 {
+            color: black;
             background-color: rgb(243, 197, 197);
-            position: relative;
+            position: absolute;
+        }
+        .color2 {
+            color:black;
+            background-color: rgb(197, 243, 209);
+            position: absolute;
+        }
+        .color3 {
+            color:black;
+            background-color: rgb(241, 197, 243);
+            position: absolute;
         }
     </style>
-</div>
+    <a href="/">戻る</a>
+    <div id="editing">
+        <button @click="creatememo">メモ作成</button>
+    </div>
+    <div id="memo">
+        {% for Boardel in Boardinfo %}
+            <div>
+                <textarea @click="select" class="{{ Boardel.memocolor }}" name="" id="" cols="25" rows="8" 
+                    style="top: {{ Boardel.y }}px; left: {{ Boardel.x }}px;" readonly>{{ Boardel.text }}</textarea>
+            </div>
+        {% endfor %}
+    </div>
+    <script>
+        const { createApp } = Vue
 
+        createApp ({
+            data() {
+                return {
+                    message: "hello!"
+                }
+            },
+            methods: {
+                creatememo(e){
+                    
+                }
+            },
+            delimiters: ['[[',']]']
+        }).mount('#editing')
+
+        createApp ({
+            data() {
+                return {
+                    selected: false
+                }
+            },
+            methods: {
+                select(e){
+                    this.selected = !this.selected
+                }
+            },
+            delimiters: ['[[',']]']
+        }).mount('#memo')
+    </script>
 {% endblock %}
