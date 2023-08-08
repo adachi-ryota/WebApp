@@ -28,7 +28,7 @@
         {% for Boardel in Boardinfo %}
             <div>
                 <textarea @click="select" class="{{ Boardel.memocolor }}" name="" id="" cols="25" rows="8" 
-                    style="top: {{ Boardel.y }}px; left: {{ Boardel.x }}px;" readonly>{{ Boardel.text }}</textarea>
+                style="top: {{ Boardel.y }}px; left: {{ Boardel.x }}px;" readonly>{{ Boardel.text }}</textarea>
             </div>
         {% endfor %}
     </div>
