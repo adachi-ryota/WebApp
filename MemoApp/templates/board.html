@@ -36,11 +36,11 @@
                     <div class="modal-body">
                         <div>
                             <label for="memo">メモ</label><br>
-                            <textarea name=""  id="text" cols="25" rows="8" value=""></textarea>
+                            <textarea v-model="text" name=""  id="text" cols="25" rows="8" value=""></textarea>
                         </div>
                         <div>
                             <label for="color">色</label>
-                            <select name="color" size="1">
+                            <select v-model="color" name="color" size="1">
                                 <option value="color1">赤</option>
                                 <option value="color2">緑</option>
                                 <option value="color3">紫</option>
@@ -54,6 +54,14 @@
                 </div>
             </div>
         </div>
+
+        <!-- 新規メモ位置決め -->
+        <form method="post">
+            <div v-show="newememo">
+                <textarea :class="color" name="" id="" cols="25" rows="8" readonly>[[ text ]]</textarea>
+            </div> 
+        </form>
+
         
     </div>
     <div id="memo">
@@ -71,12 +79,15 @@
         createApp ({
             data() {
                 return {
-                    newmemo: false
+                    newememo : false,
+                    text : '',
+                    color : ''
                 }
             },
             methods: {
                 create(e){
-                    newememo = true
+
+                    this.newememo = true
                 },
                 close(e){
 
