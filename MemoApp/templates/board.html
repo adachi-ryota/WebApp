@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% block bodycontent %}
     <style>
+
         body {
             background-color: white;
         }
@@ -22,7 +23,38 @@
     </style>
     <a href="/">戻る</a>
     <div id="editing">
-        <button @click="creatememo">メモ作成</button>
+        <button type="button" data-bs-toggle="modal" data-bs-target="#creatememomodal">新規メモ</button>
+
+        <!-- モーダル画面 -->
+        <div class="modal fade" id="creatememomodal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" area-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">新規メモ作成</h5>
+                        <button type="button" class="btn-close" aria-label="Close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div>
+                            <label for="memo">メモ</label><br>
+                            <textarea name=""  id="text" cols="25" rows="8" value=""></textarea>
+                        </div>
+                        <div>
+                            <label for="color">色</label>
+                            <select name="color" size="1">
+                                <option value="color1">赤</option>
+                                <option value="color2">緑</option>
+                                <option value="color3">紫</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">削除</button>
+                        <button @click="create" type="button" class="btn btn-primary" data-bs-dismiss="modal">作成</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
     </div>
     <div id="memo">
         {% for Boardel in Boardinfo %}
@@ -33,18 +65,26 @@
         {% endfor %}
     </div>
     <script>
+
         const { createApp } = Vue
 
         createApp ({
             data() {
                 return {
-                    message: "hello!"
+                    newmemo: false
                 }
             },
             methods: {
-                creatememo(e){
+                create(e){
+                    newememo = true
+                },
+                close(e){
+
+                },
+                edit(e){
                     
-                }
+                },
+
             },
             delimiters: ['[[',']]']
         }).mount('#editing')
