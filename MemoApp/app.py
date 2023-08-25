@@ -38,6 +38,7 @@ class Boards(db.Model):
     board_id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(20))
     browsing = db.Column(db.Integer)
+    createfor = db.Column(db.String)
 
 #メモ情報
 class Memo(db.Model):
@@ -119,15 +120,35 @@ def createboard():
         browsing = request.form.get('browsing')
 
         if title and browsing:
-            board = Boards(title=title, browsing=browsing)
+            board = Boards(title=title, browsing=browsing, createfor=current_user.id)
 
             db.session.add(board)
             db.session.commit()
             return redirect('/')
         else:
-            return render_template('createboard.html', user=current_user, message='Not filled in title or ituka')
+            return render_template('createboard.html', user=current_user, message='Not filled in title')
     else:
         return render_template('createboard.html', user=current_user)
+
+# ボード削除画面
+@app.route('/deleteboard', methods=['GET', 'POST'])
+@login_required
+def deleteboard():
+    if request.method == 'POST':
+        b_id = request.form.get('b_id')
+
+        board = Boards.query.filter_by(board_id=b_id).first()
+        db.session.delete(board)
+
+        Memo.query.filter_by(board_id=b_id).delete()
+    
+        db.session.commit()
+
+        return redirect("/")
+    else:
+        user = current_user
+        boards = Boards.query.filter_by(createfor=user.id)
+        return render_template('deleteboard.html', Boards=boards)
 
 #ボード画面
 @app.route('/board/<id>', methods=['GET', 'POST'])

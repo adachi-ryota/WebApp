@@ -40,9 +40,8 @@
             </div>
         {% endfor %}
     </div>
-    <!-- メモ管理 -->
-    <div id="editing">
-        <!-- メモ作成 -->
+    <!-- メモ作成 -->
+    <div id="create">
         <button type="button" data-bs-toggle="modal" data-bs-target="#creatememomodal">新規メモ</button>
 
         <!-- モーダル画面 -->
@@ -61,6 +60,7 @@
                         <div>
                             <label for="color">色</label>
                             <select v-model="color" name="color" size="1">
+                                <option value="color1">白</option>
                                 <option value="color1">赤</option>
                                 <option value="color2">緑</option>
                                 <option value="color3">紫</option>
@@ -88,10 +88,15 @@
 
         
     </div>
+    <!-- メモ削除 -->
+    <div id="delete">
+        <button type="button" >メモ削除</button>
+    </div>
     <script>
 
         const { createApp } = Vue
 
+        // id="crete"
         createApp ({
             data() {
                 return {
@@ -120,20 +125,21 @@
 
             },
             delimiters: ['[[',']]']
-        }).mount('#editing')
+        }).mount('#create')
 
+        // id="delete"
         createApp ({
             data() {
                 return {
-                    selected: false
+                    
                 }
             },
             methods: {
                 select(e){
-                    this.selected = !this.selected
+                    
                 }
             },
             delimiters: ['[[',']]']
-        }).mount('#memo')
+        }).mount('#delete')
     </script>
 {% endblock %}

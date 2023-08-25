@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block bodycontent %}
+<div>
+    <a href="/">戻る</a><br>
+</div>
+<form method="post">
+    <div>
+        <label for="b_id">タイトル</label>
+        <select id="b_id" name="b_id">
+        {% for Board in Boards %}
+            <option value="{{ Board.board_id }}">{{ Board.title }}</option>
+        {% endfor %}
+        </select>
+    </div>
+    <input type="submit" value="削除">
+    <h1>{{ message }}</h1>
+</forn>
+{% endblock %}
