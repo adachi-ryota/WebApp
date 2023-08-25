@@ -130,9 +130,23 @@ def createboard():
         return render_template('createboard.html', user=current_user)
 
 #ボード画面
-@app.route('/board/<id>')
+@app.route('/board/<id>', methods=['GET', 'POST'])
 @login_required
 def board(id):
+    if request.method == 'POST':
+        text = request.form.get('newmemo')
+        x = int(request.form.get('x'))
+        y = int(request.form.get('y')) + 20
+        memocolor = request.form.get('color')
+
+        if memocolor and x and y:
+            user=current_user
+            memo = Memo(board_id=id, writeuserid=user.id, text=text,
+                memocolor=memocolor, x=x, y=y)
+
+            db.session.add(memo)
+            db.session.commit()
+
     Boardinfo = Memo.query.filter_by(board_id=id)
     return render_template('board.html',Boardinfo=Boardinfo)
 

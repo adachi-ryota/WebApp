@@ -3,18 +3,27 @@
     <style>
 
         body {
-            background-color: white;
+            background-color: rgb(255, 255, 255);
         }
+        /* メモ白色 */
+        .color0 {
+            color: black;
+            background-color: rgb(255, 255, 255);
+            position: absolute;
+        }
+        /* メモ赤色 */
         .color1 {
             color: black;
             background-color: rgb(243, 197, 197);
             position: absolute;
         }
+        /* メモ緑色 */
         .color2 {
             color:black;
             background-color: rgb(197, 243, 209);
             position: absolute;
         }
+        /* メモ紫色 */
         .color3 {
             color:black;
             background-color: rgb(241, 197, 243);
@@ -22,7 +31,18 @@
         }
     </style>
     <a href="/">戻る</a>
+    <!-- 既存メモ表示 -->
+    <div id="memo">
+        {% for Boardel in Boardinfo %}
+            <div>
+                <textarea @click="select" class="{{ Boardel.memocolor }}" name="" id="" cols="25" rows="8" 
+                style="top: {{ Boardel.y }}px; left: {{ Boardel.x }}px;" readonly>{{ Boardel.text }}</textarea>
+            </div>
+        {% endfor %}
+    </div>
+    <!-- メモ管理 -->
     <div id="editing">
+        <!-- メモ作成 -->
         <button type="button" data-bs-toggle="modal" data-bs-target="#creatememomodal">新規メモ</button>
 
         <!-- モーダル画面 -->
@@ -48,7 +68,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">削除</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">戻る</button>
                         <button @click="create" type="button" class="btn btn-primary" data-bs-dismiss="modal">作成</button>
                     </div>
                 </div>
@@ -56,21 +76,17 @@
         </div>
 
         <!-- 新規メモ位置決め -->
-        <form method="post">
-            <div v-show="newememo">
-                <textarea :class="color" name="" id="" cols="25" rows="8" readonly>[[ text ]]</textarea>
+        <form name="newmemo" method="post">
+            <div v-show="newememo" @mousemove="move" @click="setmemo">
+                <textarea :class="color" name="newmemo" id="" cols="25" rows="8" 
+                    :style="{ transform: `translate(${x}px, ${y}px)` }" readonly>[[ text ]]</textarea>
             </div> 
+            <input type="hidden" name="x" :value="x">
+            <input type="hidden" name="y" :value="y">
+            <input type="hidden" name="color" :value="color">
         </form>
 
         
-    </div>
-    <div id="memo">
-        {% for Boardel in Boardinfo %}
-            <div>
-                <textarea @click="select" class="{{ Boardel.memocolor }}" name="" id="" cols="25" rows="8" 
-                style="top: {{ Boardel.y }}px; left: {{ Boardel.x }}px;" readonly>{{ Boardel.text }}</textarea>
-            </div>
-        {% endfor %}
     </div>
     <script>
 
@@ -81,7 +97,9 @@
                 return {
                     newememo : false,
                     text : '',
-                    color : ''
+                    color : 'color0',
+                    x : 0,
+                    y : 0
                 }
             },
             methods: {
@@ -89,8 +107,12 @@
 
                     this.newememo = true
                 },
-                close(e){
-
+                move(e){
+                    this.x = e.clientX - 100
+                    this.y = e.clientY - 100
+                },
+                setmemo(e){
+                    document.newmemo.submit()
                 },
                 edit(e){
                     
