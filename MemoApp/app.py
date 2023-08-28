@@ -45,6 +45,7 @@ class Memo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     board_id = db.Column(db.Integer)
     writeuserid = db.Column(db.Integer)
+    title = db.Column(db.Text())
     text = db.Column(db.Text())
     memocolor = db.Column(db.String(6))
     x = db.Column(db.Integer)
@@ -163,9 +164,10 @@ def board(id):
             y = int(request.form.get('y'))
             memocolor = request.form.get('color')
             if memocolor and x and y:
+                title = text[0:4]
                 user=current_user
                 memo = Memo(board_id=id, writeuserid=user.id, text=text,
-                    memocolor=memocolor, x=x, y=y)
+                    title=title, memocolor=memocolor, x=x, y=y)
 
                 db.session.add(memo)
                 db.session.commit()

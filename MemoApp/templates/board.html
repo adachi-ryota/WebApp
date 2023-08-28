@@ -108,12 +108,15 @@
                    <div class="modal-body">
                         <form name="deletememo" method="post">
                             <input type="hidden" name="type" value="delete">
-                            <select name="memo_id" id="memo_id">
+                            <select name="memo_id" id="memo_id" @change="selectmemo" v-model="memoid">
                                 {% for memo in Boardinfo2 %}
-                                    <option id="" @click="selectmemo" value="{{ memo.id }}">{{ memo.id }}</option>
+                                    <option value="{{ memo.id }}">{{ memo.title }}...</option>
                                 {% endfor %}
                             </select>
                         </form>
+                        {% for memo in Boardinfo2 %}
+                            <input type="hidden" id="d{{ memo.id }}" value="{{ memo.text }}">
+                        {% endfor %}
                         <textarea name="" id="" cols="25" rows="8" readonly>[[ memotext ]]</textarea>
                     </div>
                     <div class="modal-footer">
@@ -160,6 +163,7 @@
             data() {
                 return {
                     visible : false,
+                    memoid: 0,
                     memotext : ""
                 }
             },
@@ -167,8 +171,10 @@
                 deletememo(e){
                     document.deletememo.submit()
                 },
-                selectmemo(memo){
-                    this.memotext = "hello"
+                selectmemo(e){
+                    const memotexts = document.getElementById("d" + this.memoid).value;
+                    console.log(memotexts)
+                    this.memotext = memotexts
                 }
             },
             delimiters: ['[[',']]']
