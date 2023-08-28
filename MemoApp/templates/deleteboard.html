@@ -3,16 +3,47 @@
 <div>
     <a href="/">戻る</a><br>
 </div>
-<form method="post">
-    <div>
-        <label for="b_id">タイトル</label>
-        <select id="b_id" name="b_id">
-        {% for Board in Boards %}
-            <option value="{{ Board.board_id }}">{{ Board.title }}</option>
-        {% endfor %}
-        </select>
+<div id="delete">
+    <form name="deleteboard" method="post">
+        <div>
+            <label for="b_id">タイトル</label>
+            <select id="b_id" name="b_id">
+            {% for Board in Boards %}
+                <option value="{{ Board.board_id }}">{{ Board.title }}</option>
+            {% endfor %}
+            </select>
+        </div>
+
+        <h1>{{ message }}</h1>
+    </form>
+    <button type="button"  data-bs-toggle="modal" data-bs-target="#confirm" >削除</button>
+    <!-- 確認モーダル -->
+    <div class="modal fade" id="confirm" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" area-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">本当に削除しますか?</h5>
+                    <button type="button" class="btn-close" aria-label="Close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">戻る</button>
+                    <button type="button" @click="deleteb" class="btn btn-primary" data-bs-dismiss="modal">削除</button>
+                </div>
+            </div>
+        </div>
     </div>
-    <input type="submit" value="削除">
-    <h1>{{ message }}</h1>
-</forn>
+</div>
+
+<script>
+    const { createApp } = Vue
+    createApp ({
+        methods: {
+            deleteb(e){
+                    document.deleteboard.submit()
+            }
+        }
+    }).mount('#delete')
+</script>
 {% endblock %}

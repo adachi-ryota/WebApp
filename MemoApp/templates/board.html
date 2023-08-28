@@ -1,30 +1,37 @@
 {% extends "base.html" %}
 {% block bodycontent %}
     <style>
-
         body {
             background-color: rgb(255, 255, 255);
         }
         /* メモ白色 */
         .color0 {
+            top:0;
+            left:0;
             color: black;
             background-color: rgb(255, 255, 255);
             position: absolute;
         }
         /* メモ赤色 */
         .color1 {
+            top:0;
+            left:0;
             color: black;
             background-color: rgb(243, 197, 197);
             position: absolute;
         }
         /* メモ緑色 */
         .color2 {
+            top:0;
+            left:0;
             color:black;
             background-color: rgb(197, 243, 209);
             position: absolute;
         }
         /* メモ紫色 */
         .color3 {
+            top:0;
+            left:0;
             color:black;
             background-color: rgb(241, 197, 243);
             position: absolute;
@@ -33,19 +40,19 @@
     <a href="/">戻る</a>
     <!-- 既存メモ表示 -->
     <div id="memo">
-        {% for Boardel in Boardinfo %}
+        {% for Memo in Boardinfo %}
             <div>
-                <textarea @click="select" class="{{ Boardel.memocolor }}" name="" id="" cols="25" rows="8" 
-                style="top: {{ Boardel.y }}px; left: {{ Boardel.x }}px;" readonly>{{ Boardel.text }}</textarea>
+                <textarea class="{{ Memo.memocolor }}" name="" id="{{ Memo.id }}" cols="25" rows="8" 
+                style="top: {{ Memo.y }}px; left: {{ Memo.x }}px;" readonly>{{ Memo.text }}</textarea>
             </div>
         {% endfor %}
     </div>
     <!-- メモ作成 -->
     <div id="create">
-        <button type="button" data-bs-toggle="modal" data-bs-target="#creatememomodal">新規メモ</button>
+        <button type="button" data-bs-toggle="modal" data-bs-target="#createmodal">新規メモ</button>
 
         <!-- モーダル画面 -->
-        <div class="modal fade" id="creatememomodal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" area-hidden="true">
+        <div class="modal fade" id="createmodal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" area-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -77,30 +84,55 @@
 
         <!-- 新規メモ位置決め -->
         <form name="newmemo" method="post">
-            <div v-show="newememo" @mousemove="move" @click="setmemo">
+            <input type="hidden" name="type" value="create">
+            <div v-show="createdmemo" @mousemove="move" @click="setmemo">
                 <textarea :class="color" name="newmemo" id="" cols="25" rows="8" 
                     :style="{ transform: `translate(${x}px, ${y}px)` }" readonly>[[ text ]]</textarea>
             </div> 
             <input type="hidden" name="x" :value="x">
             <input type="hidden" name="y" :value="y">
             <input type="hidden" name="color" :value="color">
-        </form>
-
-        
+        </form> 
     </div>
     <!-- メモ削除 -->
     <div id="delete">
-        <button type="button" >メモ削除</button>
+        <button type="button" data-bs-toggle="modal" data-bs-target="#deletemodal">メモ削除</button>
+        <!-- モーダル画面 -->
+        <div class="modal fade" id="deletemodal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" area-hidden="true">
+            <div class="modal-dialog">
+                 <div class="modal-content">
+                     <div class="modal-header">
+                       <h5 class="modal-title">メモ削除</h5>
+                       <button type="button" class="btn-close" aria-label="Close" data-bs-dismiss="modal"></button>
+                    </div>
+                   <div class="modal-body">
+                        <form name="deletememo" method="post">
+                            <input type="hidden" name="type" value="delete">
+                            <select name="memo_id" id="memo_id">
+                                {% for memo in Boardinfo2 %}
+                                    <option id="" @click="selectmemo" value="{{ memo.id }}">{{ memo.id }}</option>
+                                {% endfor %}
+                            </select>
+                        </form>
+                        <textarea name="" id="" cols="25" rows="8" readonly>[[ memotext ]]</textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">戻る</button>
+                        <button @click="deletememo" type="button" class="btn btn-primary" data-bs-dismiss="modal">削除</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
     <script>
 
         const { createApp } = Vue
 
-        // id="crete"
+        // id="create"
         createApp ({
             data() {
                 return {
-                    newememo : false,
+                    createdmemo : false,
                     text : '',
                     color : 'color0',
                     x : 0,
@@ -109,8 +141,7 @@
             },
             methods: {
                 create(e){
-
-                    this.newememo = true
+                    this.createdmemo = true
                 },
                 move(e){
                     this.x = e.clientX - 100
@@ -118,9 +149,6 @@
                 },
                 setmemo(e){
                     document.newmemo.submit()
-                },
-                edit(e){
-                    
                 },
 
             },
@@ -131,12 +159,16 @@
         createApp ({
             data() {
                 return {
-                    
+                    visible : false,
+                    memotext : ""
                 }
             },
             methods: {
-                select(e){
-                    
+                deletememo(e){
+                    document.deletememo.submit()
+                },
+                selectmemo(memo){
+                    this.memotext = "hello"
                 }
             },
             delimiters: ['[[',']]']

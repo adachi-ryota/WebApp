@@ -71,9 +71,9 @@ def login():
                 login_user(user)
                 return redirect('/')
             else:
-                return render_template('login.html', message='Invalid username or password')
+                return render_template('login.html', message='ユーザーネームかパスワードが違います')
         else:
-            return render_template('login.html', message='Not filled in username or password')
+            return render_template('login.html', message='ユーザーネームかパスワードが記入されていません')
     else:
         return render_template('login.html')
 
@@ -91,7 +91,7 @@ def signup():
             db.session.commit()
             return redirect('/login')
         else:
-            return render_template('signup.html', message='Not filled in username or password')
+            return render_template('signup.html', message='ユーザーネームかパスワードが記入されていません')
     else:
         return render_template('signup.html')
 
@@ -126,7 +126,7 @@ def createboard():
             db.session.commit()
             return redirect('/')
         else:
-            return render_template('createboard.html', user=current_user, message='Not filled in title')
+            return render_template('createboard.html', user=current_user, message='タイトルが記入されていません')
     else:
         return render_template('createboard.html', user=current_user)
 
@@ -155,21 +155,31 @@ def deleteboard():
 @login_required
 def board(id):
     if request.method == 'POST':
-        text = request.form.get('newmemo')
-        x = int(request.form.get('x'))
-        y = int(request.form.get('y')) + 20
-        memocolor = request.form.get('color')
+        dtype = request.form.get('type')
+    
+        if dtype == "create":
+            text = request.form.get('newmemo')
+            x = int(request.form.get('x'))
+            y = int(request.form.get('y'))
+            memocolor = request.form.get('color')
+            if memocolor and x and y:
+                user=current_user
+                memo = Memo(board_id=id, writeuserid=user.id, text=text,
+                    memocolor=memocolor, x=x, y=y)
 
-        if memocolor and x and y:
-            user=current_user
-            memo = Memo(board_id=id, writeuserid=user.id, text=text,
-                memocolor=memocolor, x=x, y=y)
+                db.session.add(memo)
+                db.session.commit()
 
-            db.session.add(memo)
+        elif dtype == "delete":
+            m_id = int(request.form.get('memo_id'))
+
+            Memo.query.filter_by(id=m_id).delete()
             db.session.commit()
-
+            
+    user = current_user
     Boardinfo = Memo.query.filter_by(board_id=id)
-    return render_template('board.html',Boardinfo=Boardinfo)
+    Boardinfo2 = Memo.query.filter_by(board_id=id,writeuserid=user.id)
+    return render_template('board.html',Boardinfo=Boardinfo, Boardinfo2=Boardinfo2)
 
 if __name__ == '__main__':
     app.run(debug=True)
