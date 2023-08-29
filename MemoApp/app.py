@@ -66,15 +66,18 @@ def login():
     if request.method == 'POST':
         username = request.form.get('username')
         password = request.form.get('password')
-        user = User.query.filter_by(username=username).first()
-        if username and password:
-            if check_password_hash(user.password, password):
-                login_user(user)
-                return redirect('/')
+        if User.query.filter_by(username=username).first():
+            user = User.query.filter_by(username=username).first()
+            if username and password:
+                if check_password_hash(user.password, password):
+                    login_user(user)
+                    return redirect('/')
+                else:
+                    return render_template('login.html', message='ユーザーネームかパスワードが違います')
             else:
-                return render_template('login.html', message='ユーザーネームかパスワードが違います')
+                return render_template('login.html', message='ユーザーネームかパスワードが記入されていません')
         else:
-            return render_template('login.html', message='ユーザーネームかパスワードが記入されていません')
+            return render_template('login.html', message='ユーザーネームかパスワードが違います')
     else:
         return render_template('login.html')
 
@@ -86,6 +89,8 @@ def signup():
         password = request.form.get('password')
 
         if username and password:
+            if User.query.filter_by(username=username).first():
+                return render_template('signup.html', message='このユーザーネームはすでに存在しています')
             user = User(username=username, password=generate_password_hash(password, method='sha256'), Administrator=False)
 
             db.session.add(user)
